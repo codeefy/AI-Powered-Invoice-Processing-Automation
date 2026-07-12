@@ -1,17 +1,21 @@
 """
-Benchmark Runner - Milestone 2
-PDF Discovery + Production Logging
+Benchmark Runner - Milestone 4
+Automatic Pilot Runner
 """
 
-from pathlib import Path
-from datetime import datetime
 import logging
+import time
+from datetime import datetime
+from pathlib import Path
 
 from config import (
     INPUT_FOLDER,
     SUPPORTED_EXTENSIONS,
-    LOG_FILE
+    LOG_FILE,
+    WAIT_BETWEEN_EMAILS
 )
+
+from email_sender import send_invoice
 
 
 # -------------------------------------------------
@@ -33,7 +37,7 @@ logger = logging.getLogger(__name__)
 
 def discover_pdfs():
     """
-    Return a sorted list of PDF files.
+    Return all PDF files sorted alphabetically.
     """
 
     files = []
@@ -50,27 +54,54 @@ def discover_pdfs():
 
 
 # -------------------------------------------------
-# Log Benchmark Information
+# Run Benchmark
 # -------------------------------------------------
 
-def log_benchmark_start(pdf_list):
+def run_benchmark(pdf_list):
+
+    total = len(pdf_list)
 
     logger.info("=" * 60)
     logger.info("Invoice Benchmark Started")
     logger.info("=" * 60)
-
     logger.info(f"Start Time : {datetime.now()}")
-
     logger.info(f"Input Folder : {INPUT_FOLDER}")
+    logger.info(f"Total PDFs : {total}")
+    logger.info("=" * 60)
 
-    logger.info(f"Total PDFs : {len(pdf_list)}")
+    print()
 
-    logger.info("")
+    for index, pdf in enumerate(pdf_list, start=1):
 
-    for i, pdf in enumerate(pdf_list, start=1):
-        logger.info(f"{i:03d}. {pdf.name}")
+        print("=" * 60)
+        print(f"[{index}/{total}] Processing : {pdf.name}")
+        print("=" * 60)
+
+        success = send_invoice(pdf)
+
+        if success:
+
+            logger.info(f"SUCCESS | {pdf.name}")
+
+            print("✅ Email sent successfully.")
+
+        else:
+
+            logger.error(f"FAILED | {pdf.name}")
+
+            print("❌ Email sending failed.")
+
+        if index != total:
+
+            print(f"\nWaiting {WAIT_BETWEEN_EMAILS} seconds...\n")
+
+            time.sleep(WAIT_BETWEEN_EMAILS)
 
     logger.info("=" * 60)
+    logger.info("Benchmark Completed")
+    logger.info("=" * 60)
+
+    print("\n🎉 Benchmark Completed Successfully.")
 
 
 # -------------------------------------------------
@@ -82,17 +113,26 @@ def main():
     pdfs = discover_pdfs()
 
     print("=" * 60)
-    print("Invoice Benchmark Runner")
+    print(" AI Invoice Benchmark Runner ")
     print("=" * 60)
 
-    print(f"\nFound {len(pdfs)} PDF files:\n")
+    print(f"\nFound {len(pdfs)} PDF files.\n")
 
     for i, pdf in enumerate(pdfs, start=1):
+
         print(f"{i:03d}. {pdf.name}")
 
-    log_benchmark_start(pdfs)
+    print()
 
-    print("\nBenchmark log created successfully.")
+    answer = input("Start benchmark? (y/n): ").strip().lower()
+
+    if answer != "y":
+
+        print("\nBenchmark cancelled.")
+
+        return
+
+    run_benchmark(pdfs)
 
 
 if __name__ == "__main__":
