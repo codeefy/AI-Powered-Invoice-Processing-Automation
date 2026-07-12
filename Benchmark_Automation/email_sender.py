@@ -1,6 +1,5 @@
 """
 Email Sender
-
 Responsible for sending one invoice PDF
 to the Gmail inbox monitored by n8n.
 """
@@ -73,16 +72,3 @@ def send_invoice(pdf_path: Path) -> bool:
 
         return False
 
-from config import INPUT_FOLDER
-
-if __name__ == "__main__":
-
-    sample_pdf = INPUT_FOLDER / "INV_001.pdf"
-    print(sample_pdf)
-
-    success = send_invoice(sample_pdf)
-
-    if success:
-        print("Email sent successfully.")
-    else:
-        print("Email sending failed.")
