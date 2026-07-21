@@ -85,53 +85,61 @@ Every invoice email is read, parsed by AI, validated against financial rules, ch
 
 ---
 
-## 🏗 High-Level Architecture
+## 🏗 System Architecture
 
-```text
-                        ┌────────────────────┐
-                        │   Gmail Inbox       │
-                        └─────────┬───────────┘
-                                  ▼
-                     Gmail Trigger (Receive Invoice Email)
-                                  ▼
-                     Convert PDF Attachment → Base64
-                                  ▼
-                       Google Gemini AI (Extraction)
-                                  ▼
-                        Validation Invoice Data
-                                  ▼
-                          Is Invoice Valid? ──false──► Append Row (Validation Log)
-                                  │true
-                                  ▼
-                 Append Row (API Checked) → HTTP Request
-                     (Get Zoho Books Organizations)
-                                  ▼
-                     Duplicate Check (Search Bills)
-                                  ▼
-                    If Duplicate Exists? ──true──► Append Row (Duplicate Log)
-                                  │false
-                                  ▼
-                     HTTP Request — Vendor Check
-                                  ▼
-                Does Vendor Exist? ──true──► Get Existing Vendor Details
-                                  │false
-                                  ▼
-              Log Vendor Check Failure → Prepare New Vendor Data
-                                  ▼
-                     Create New Vendor in Zoho
-                          │success        │error
-                          ▼                ▼
-                 Build & Verify        Log Vendor
-                 Zoho Payload          Creation Failure
-                          ▼
-                Is Zoho Payload Valid? ──false──► Log Payload Validation Failure
-                          │true
-                          ▼
-                   Create Bill for Clarity (Zoho Books)
-                          │success        │error
-                          ▼                ▼
-                 Append Row           Log Zoho Bill
-                 (Bill Created)       Creation Failure
+> This diagram is written in **Mermaid**, so it renders as an actual flowchart directly on GitHub (no image needed for this part) — colored by stage, with every decision branch and failure path shown explicitly.
+
+```mermaid
+flowchart TD
+    A([📧 Gmail Trigger<br/>Receive Invoice Email]) --> B[Convert PDF Attachment<br/>to Base64]
+    B --> C[🤖 Gemini AI<br/>Extract Invoice Data]
+    C --> D[Validate Invoice Data<br/>Code Node]
+    D --> E{Is Invoice<br/>Valid?}
+    E -- ❌ No --> F[(📊 Log:<br/>Validation Failed)]
+
+    E -- ✅ Yes --> G[Append Row:<br/>API Checked]
+    G --> H[Get Zoho Books<br/>Organizations]
+    H --> I[🔁 Duplicate Check:<br/>Search Existing Bills]
+    I --> J{Duplicate<br/>Exists?}
+    J -- ❌ Yes --> K[(📊 Log:<br/>Duplicate Found)]
+
+    J -- ✅ No --> L[Vendor Check:<br/>Search Zoho]
+    L --> M{Vendor<br/>Exists?}
+    M -- ✅ Yes --> N[Get Existing<br/>Vendor Details]
+    M -- ❌ No --> O[(📊 Log:<br/>Vendor Check Failed)]
+    O --> P[Prepare New<br/>Vendor Data]
+    P --> Q[Create Vendor<br/>in Zoho]
+    Q -- ✅ Success --> N
+    Q -- ❌ Error --> R[(📊 Log:<br/>Vendor Creation Failed)]
+
+    N --> S[Build & Verify<br/>Zoho Payload]
+    S --> T{Payload<br/>Valid?}
+    T -- ❌ No --> U[(📊 Log:<br/>Payload Validation Failed)]
+
+    T -- ✅ Yes --> V[🧾 Create Bill<br/>in Zoho Books]
+    V -- ✅ Success --> W[(📊 Log:<br/>Bill Created)]
+    V -- ❌ Error --> X[(📊 Log:<br/>Bill Creation Failed)]
+
+    classDef trigger fill:#4285F4,stroke:#1a56c4,color:#fff,font-weight:bold;
+    classDef process fill:#2b2f36,stroke:#555,color:#fff;
+    classDef decision fill:#F9AB00,stroke:#c47f00,color:#000,font-weight:bold;
+    classDef success fill:#34A853,stroke:#1e7a37,color:#fff;
+    classDef failure fill:#EA4335,stroke:#a52a1f,color:#fff;
+    classDef log fill:#8E75B2,stroke:#5f4b80,color:#fff;
+
+    class A trigger;
+    class B,C,D,G,H,I,L,N,O,P,Q,S process;
+    class E,J,M,T decision;
+    class V,W success;
+    class F,K,R,U,X log;
+```
+
+### 🖼 n8n Workflow Screenshot
+
+Drop your exported canvas screenshot into `docs/screenshots/` and embed it right below the Mermaid diagram so the README shows both the *logical* flow above and the *actual n8n canvas* here:
+
+```markdown
+![n8n Workflow Overview](docs/screenshots/n8n_workflow_overview.png)
 ```
 
 ---
@@ -190,24 +198,29 @@ Every branch writes to a dedicated Google Sheets log: API Checked, Duplicate, Ve
 
 ---
 
-## 📁 Suggested Repository Structure
+## 📁 Project Structure
 
 ```text
-AI-Invoice-Automation/
+AI_Invoice_Processing_Automation/
 │
-├── n8n_Workflow/
-│   └── Invoice_Automation.json        # Exported n8n workflow
+├── Benchmark_Automation/        # Scripts that run the workflow against test invoice batches
 │
-├── screenshots/
-│   ├── workflow_overview.png
-│   ├── gemini_extraction.png
-│   ├── zoho_bill_created.png
-│   └── audit_sheet_log.png
+├── dashboard/                   # Power BI / reporting dashboard assets
 │
-├── docs/
-│   └── architecture.md
+├── docs/                        # Documentation, architecture notes, and screenshots
+│   └── screenshots/
+│       └── n8n_workflow_overview.png
 │
-└── README.md
+├── Evaluation/                  # Accuracy & KPI evaluation engine (ground-truth comparison)
+│
+├── Invoice_100_Test/             # 100-invoice benchmark test set + results
+│
+├── workflow/                    # Exported n8n workflow JSON
+│   └── Invoice_Automation.json
+│
+├── .env                          # API keys & environment variables (not committed)
+├── .gitignore
+└── Readme.md
 ```
 
 ---
