@@ -38,6 +38,43 @@ Every invoice email is read, parsed by AI, validated against financial rules, ch
 
 ---
 
+/div>
+---
+ 
+## ❗ Problem Statement
+ 
+Organizations receive hundreds of invoices from different vendors every day. Since each vendor follows a different invoice format, accounting teams often spend significant time manually reviewing invoices, extracting information, verifying totals, checking for duplicate entries, creating vendor records, and entering bills into ERP systems.
+ 
+This manual process introduces several challenges:
+ 
+- Time-consuming invoice processing
+- Human data-entry errors
+- Duplicate invoice creation
+- Inconsistent vendor records
+- Financial reconciliation issues
+- Limited audit visibility
+As invoice volume increases, these problems become difficult to manage manually.
+ 
+---
+ 
+## 💡 Solution
+ 
+This project solves these challenges by building an end-to-end AI-powered Intelligent Document Processing (IDP) platform.
+ 
+The workflow automatically:
+ 
+- Receives invoice PDFs from Gmail
+- Extracts structured invoice information using Google Gemini
+- Validates financial consistency
+- Detects duplicate invoices
+- Resolves or creates vendors automatically
+- Creates ERP bills in Zoho Books
+- Maintains complete audit logs
+- Benchmarks workflow performance against ground-truth datasets
+The result is a production-style automation pipeline that significantly reduces manual effort while improving data quality and process reliability.
+ 
+---
+
 ## ⭐ Key Features
 
 - 📧 **Gmail-triggered ingestion** — no manual upload required
