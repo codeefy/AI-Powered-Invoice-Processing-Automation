@@ -91,9 +91,6 @@ The result is a production-style automation pipeline that significantly reduces 
 
 ## 🏗 System Architecture
 
-> This diagram is written in **Mermaid**, so it renders as an actual flowchart directly on GitHub (no image needed for this part) — colored by stage, with every decision branch and failure path shown explicitly.
-
-```mermaid
 flowchart TD
     A([📧 Gmail Trigger<br/>Receive Invoice Email]) --> B[Convert PDF Attachment<br/>to Base64]
     B --> C[🤖 Gemini AI<br/>Extract Invoice Data]
