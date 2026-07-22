@@ -50,39 +50,10 @@ Every invoice email is read, parsed by AI, validated against financial rules, ch
 - 🛡 **Fail-safe branching** — validation, duplicate, vendor, and payload failures each get their own logged path, so nothing fails silently
 
 ---
+### 🖼 n8n Workflow: Here's the actual n8n canvas, showing every node and branch exactly as built:
 
-## 📊 Impact / Benchmark Highlights
-
-<div align="left">
-
-| Metric | Result |
-|:---|:---:|
-| Invoices Processed | **100+** |
-| AI Extraction Accuracy | **95%+** |
-| Manual Effort Reduction | **80%** |
-| Duplicate Detection | ✅ Implemented |
-| Financial Validation | ✅ Implemented |
-| Automatic Vendor Creation | ✅ Implemented |
-| Audit Logging | ✅ Every branch logged to Sheets |
-
-</div>
-
----
-
-## ⚙️ Tools & Technology
-
-| Category | Stack |
-|---|---|
-| **Workflow Automation** | n8n (cloud-hosted, `rohit21f.app.n8n.cloud`) |
-| **AI / LLM** | Google Gemini API — `gemini-2.5-flash-lite` |
-| **ERP / Accounting** | Zoho Books API |
-| **Email Ingestion** | Gmail Trigger (n8n) |
-| **Data Handling** | Base64 PDF encoding, JSON transformation |
-| **Audit & Logging** | Google Sheets API |
-| **Core Logic** | n8n Code nodes (JavaScript) for validation & payload building |
-
-**Language:** JavaScript (n8n Code nodes) · JSON (data contracts between nodes)
-
+ ![n8n Workflow Overview](Doc/n8nworkflow.png)
+ 
 ---
 
 ## 🏗 System Architecture
@@ -134,12 +105,6 @@ flowchart TD
     class F,K,R,U,X log;
 ```
 
-### 🖼 n8n Workflow: Here's the actual n8n canvas, showing every node and branch exactly as built:
- 
-![n8n Workflow Overview](Doc/n8nworkflow.png)
- 
----
-
 ## 🔄 n8n Workflow — Step by Step
 
 ### 1. Ingestion
@@ -184,6 +149,20 @@ flowchart TD
 Every branch writes to a dedicated Google Sheets log: API Checked, Duplicate, Vendor Check Failure, Vendor Creation Failure, Payload Validation Failure, and Bill Creation (success/failure). Every invoice that enters the system has a traceable outcome, even if it never reaches Zoho Books.
 
 ---
+## ⚙️ Tools & Technology
+
+| Category | Stack |
+|---|---|
+| **Workflow Automation** | n8n (cloud-hosted, `rohit21f.app.n8n.cloud`) |
+| **AI / LLM** | Google Gemini API — `gemini-2.5-flash-lite` |
+| **ERP / Accounting** | Zoho Books API |
+| **Email Ingestion** | Gmail Trigger (n8n) |
+| **Data Handling** | Base64 PDF encoding, JSON transformation |
+| **Audit & Logging** | Google Sheets API |
+| **Core Logic** | n8n Code nodes (JavaScript) for validation & payload building |
+
+**Language:** JavaScript (n8n Code nodes) · JSON (data contracts between nodes)
+---
 
 ## 🧩 Design Highlights
 
@@ -193,6 +172,21 @@ Every branch writes to a dedicated Google Sheets log: API Checked, Duplicate, Ve
 - **Two-stage validation** — invoice data is validated once right after extraction, and the Zoho payload is validated again right before the API call, catching errors introduced during transformation
 
 ---
+## 📊 Impact / Benchmark Highlights
+
+<div align="left">
+
+| Metric | Result |
+|:---|:---:|
+| Invoices Processed | **100+** |
+| AI Extraction Accuracy | **95%+** |
+| Manual Effort Reduction | **80%** |
+| Duplicate Detection | ✅ Implemented |
+| Financial Validation | ✅ Implemented |
+| Automatic Vendor Creation | ✅ Implemented |
+| Audit Logging | ✅ Every branch logged to Sheets |
+
+</div>
 
 ## 📁 Project Structure
 
