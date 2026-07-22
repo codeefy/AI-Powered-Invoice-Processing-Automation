@@ -215,14 +215,6 @@ AI_Invoice_Processing_Automation/
 
 ---
 
-## 🚀 Resume Highlights
-
-- Built a production-ready invoice automation platform using **n8n**, processing **100+ invoices end-to-end** from mail ingestion to ERP bill creation using n8n, Google Gemini, and Zoho Books APIs.
-- Implemented AI integrations with Zoho Books and Gemini AI for invoice parsing, financial validation, duplicate prevention, payload verification, and vendor resolution, achieving **95%+ data extraction accuracy** with structured validation and normalization.
-- Designed fail-safe branching across every workflow decision point (validity, duplicate, vendor, payload) with dedicated audit logging, reducing manual invoice-processing effort by **80%**.
-
----
-
 ## 🔮 Future Improvements
 
 - OCR fallback (Tesseract) for scanned/non-selectable PDFs
@@ -234,14 +226,5 @@ AI_Invoice_Processing_Automation/
 ---
 
 <div align="center">
-
-## 👨‍💻 Author
-
-**Rohit Raj**
-M.Sc. Economics & Management, IIIT Lucknow
-
----
-
-📜 *This project is intended for educational, research, and portfolio purposes.*
 
 </div>
